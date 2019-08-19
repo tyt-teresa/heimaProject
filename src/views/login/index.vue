@@ -70,6 +70,7 @@ export default {
         ],
         checked: [
           {
+            // validator--->自定义校验函数
             validator: fn
           }
         ]
@@ -77,10 +78,16 @@ export default {
     }
   },
   methods: {
+    // validate--->手动校验表单数据
     login () {
       this.$refs.form.validate(isOK => {
         if (isOK) {
-
+          this.$axios.post('/authorizations', this.ruleForm).then(result => {
+            // console.log(result)
+            window.localStorage.setItem('user-info', JSON.stringify(result.data.data))
+            // 编程式导航
+            this.$router.push('/home')
+          })
         }
       })
     }
