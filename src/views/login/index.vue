@@ -24,6 +24,7 @@
 </template>
 
 <script>
+// import { Message } from 'element-ui'
 export default {
   data () {
     var fn = function (rule, value, callback) {
@@ -88,8 +89,9 @@ export default {
             // 编程式导航
             this.$router.push('/home')
           }).catch(() => {
-            this.$massage({
-              message: '登录失败!',
+            // console.log(error)
+            this.$message({
+              message: '输入的手机号或验证码错误',
               type: 'warning'
             })
           })
