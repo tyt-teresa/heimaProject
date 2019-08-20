@@ -9,6 +9,7 @@ axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
 Vue.prototype.$axios = axios
 Vue.use(elementUI)
 Vue.config.productionTip = false
+
 new Vue({
   router,
   render: h => h(App)
