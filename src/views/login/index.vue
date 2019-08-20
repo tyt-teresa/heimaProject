@@ -87,6 +87,11 @@ export default {
             window.localStorage.setItem('user-info', JSON.stringify(result.data.data))
             // 编程式导航
             this.$router.push('/home')
+          }).catch(() => {
+            this.$massage({
+              message: '登录失败!',
+              type: 'warning'
+            })
           })
         }
       })
