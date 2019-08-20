@@ -24,7 +24,6 @@
 </template>
 
 <script>
-// import { Message } from 'element-ui'
 export default {
   data () {
     var fn = function (rule, value, callback) {

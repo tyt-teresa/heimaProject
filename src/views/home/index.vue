@@ -1,7 +1,7 @@
 <template>
   <el-container>
-  <el-aside width="240px">
-
+  <el-aside style="width:200px;height:100vh;background-color: #323745;">
+    <home-aside></home-aside>
   </el-aside>
   <el-container>
     <el-header>Header</el-header>
@@ -12,10 +12,8 @@
 </template>
 
 <script>
+import homeAside from '../../components/home-aside'
 export default {
-
+  components: { 'home-aside': homeAside }
 }
 </script>
-<style lang="less" scoped>
-
-</style>
