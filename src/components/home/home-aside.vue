@@ -1,5 +1,5 @@
 <template>
-  <home-aside>
+  <div>
     <div class="title">
       <img src="../../assets/image/logo_admin.png" alt="黑马头条" />
     </div>
@@ -34,7 +34,7 @@
         <span slot="title">账户信息</span>
       </el-menu-item>
     </el-menu>
-  </home-aside>
+  </div>
 </template>
 
 <script>
