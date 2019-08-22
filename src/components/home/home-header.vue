@@ -6,7 +6,7 @@
     </el-col>
     <el-col :span="3" class="right-header">
       <img :src="user.photo?user.photo:defaultImg" alt="用户头像" />
-      <el-dropdown trigger="click" class="select">
+      <el-dropdown trigger="click" class="select" @command="commandItems">
         <span class="el-dropdown-link">
           {{user.name}}
           <i class="el-icon-arrow-down el-icon--right"></i>
@@ -41,9 +41,19 @@ export default {
         url: '/user/profile',
         headers: { 'Authorization': `Bearer ${token}` }
       }).then(result => {
-        console.log(result.data.data)
+        // console.log(result.data.data)
         this.user = result.data.data
       })
+    },
+    commandItems (command) {
+      if (command === 'account') {
+        this.$router.push('/home/acount')
+      } else if (command === 'git') {
+        window.location.href = 'https://github.com/tyt-teresa/heimaProject'
+      } else {
+        window.localStorage.clear()
+        this.$router.push('/login')
+      }
     }
   },
   created () {
