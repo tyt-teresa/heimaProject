@@ -82,7 +82,10 @@ export default {
     login () {
       this.$refs.form.validate(isOK => {
         if (isOK) {
-          this.$axios.post('/authorizations', this.ruleForm).then(result => {
+          this.$axios.post({
+            url: '/authorizations',
+            data: this.ruleForm
+          }).then(result => {
             // console.log(result)
             window.localStorage.setItem('user-info', JSON.stringify(result.data.data))
             // 编程式导航

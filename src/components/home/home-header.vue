@@ -12,9 +12,9 @@
           <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item icon="el-icon-plus">个人信息</el-dropdown-item>
-          <el-dropdown-item icon="el-icon-circle-plus">git地址</el-dropdown-item>
-          <el-dropdown-item icon="el-icon-circle-plus-outline">退出</el-dropdown-item>
+          <el-dropdown-item command="account">个人信息</el-dropdown-item>
+          <el-dropdown-item command="git">git地址</el-dropdown-item>
+          <el-dropdown-item command="logout">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </el-col>
@@ -22,7 +22,30 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data () {
+    return {
+      user: {
+
+      },
+      defaultImg: require('../../assets/image/avatar.jpg')
+    }
+  },
+  methods: {
+    getInfo () {
+      this.$axios({
+        url: '/user/profile'
+      }).then(result => {
+        console.log(result.data)
+      }).catch(
+        // console.log(error)
+      )
+    }
+  },
+  created () {
+    this.getInfo()
+  }
+}
 </script>
 
 <style lang="less" scoped>
