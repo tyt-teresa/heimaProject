@@ -1,7 +1,7 @@
 <template>
   <home-aside>
     <div class="title">
-      <img src="../assets/image/logo_admin.png" alt="黑马头条" />
+      <img src="../../assets/image/logo_admin.png" alt="黑马头条" />
     </div>
     <el-menu background-color="#353b4e" text-color="#adafb5" active-text-color=" #ffd04b">
       <el-menu-item index="1">
