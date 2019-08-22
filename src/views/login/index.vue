@@ -84,7 +84,7 @@ export default {
         if (isOK) {
           this.$axios.post('/authorizations', this.ruleForm).then(result => {
             // console.log(result)
-            window.localStorage.setItem('user-info', JSON.stringify(result.data.data))
+            window.localStorage.setItem('user-info', JSON.stringify(result.data))
             // 编程式导航
             this.$router.push('/home')
           }).catch(() => {

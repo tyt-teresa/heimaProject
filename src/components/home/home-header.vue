@@ -42,7 +42,7 @@ export default {
         // headers: { 'Authorization': `Bearer ${token}` }
       }).then(result => {
         // console.log(result.data.data)
-        this.user = result.data.data
+        this.user = result.data
       })
     },
     commandItems (command) {
