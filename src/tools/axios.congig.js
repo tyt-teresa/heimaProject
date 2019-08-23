@@ -1,6 +1,10 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
+import JSONBig from 'json-big'
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
+axios.defaults.transformResponse = [function (data) {
+  return data ? JSONBig.parse(data) : {}
+}]
 axios.interceptors.request.use(function (config) {
   let userinfo = window.localStorage.getItem('user-info')
   let token = userinfo ? JSON.parse(userinfo).token : null
