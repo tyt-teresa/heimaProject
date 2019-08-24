@@ -14,8 +14,8 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="频道列表:">
-        <el-select v-model="value" placeholder="请选择">
-          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
+        <el-select v-model="channels_id" placeholder="请选择">
+          <el-option v-for="item in channel" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="时间选择:">
@@ -34,22 +34,22 @@
       <div class="content-item" v-for="(item,index) in list" :key="index">
         <!-- 左侧内容 -->
         <div class="left">
-          <img src="../../assets/image/collect.png" alt />
+          <img :src="item.cover.images" alt />
           <!-- 内容信息 -->
           <div class="info">
             <!-- 文章标题 -->
-            <span></span>
-            <el-tag style="width:60px">已发表</el-tag>
-            <span class="date"></span>
+            <span>{{item.title}}</span>
+            <el-tag style="width:60px" :type="item.status|statusType">{{item.status|statusText}}</el-tag>
+            <span class="date">{{item.pubdate}}</span>
           </div>
         </div>
         <!-- 右侧内容 -->
         <div class="right">
-          <span style='cursor:pointer'>
+          <span style="cursor:pointer">
             <i class="el-icon-edit"></i>
             修改
           </span>
-          <span @click="delItem(item)" style='cursor:pointer'>
+          <span @click="delItem(item)" style="cursor:pointer">
             <i class="el-icon-delete"></i>
             删除
           </span>
@@ -63,33 +63,69 @@
 export default {
   data () {
     return {
-      radio: 5,
-      options: [
-        {
-          value: '选项1',
-          label: '黄金糕'
-        },
-        {
-          value: '选项2',
-          label: '双皮奶'
-        },
-        {
-          value: '选项3',
-          label: '蚵仔煎'
-        },
-        {
-          value: '选项4',
-          label: '龙须面'
-        },
-        {
-          value: '选项5',
-          label: '北京烤鸭'
-        }
-      ],
-      value: '',
-      value1: '',
+    //   formDate: {
+    //     radio: 5,
+    //     channels_id: '',
+    //     status: null,
+    //     page: {
+    //       currentPage: 1,
+    //       totalCount: 0,
+    //       pageSize: 10
+    //     }
+    //  },
+      channels: [],
       list: []
     }
+  },
+  methods: {
+    getChannels () {
+      this.$axios({
+        url: '/channels'
+      }).then(result => {
+        // console.log(result.data)
+        this.channel = result.data.results
+      })
+    },
+    getArticles () {
+      this.$axios({
+        url: '/articles'
+      }).then(result => {
+        // console.log(result)/
+        this.list = result.data.results
+        this.totalCount = result.data.total_count
+      })
+    }
+  },
+  filters: {
+    statusText (value) {
+      switch (value) {
+        case 0 :
+          return '草稿'
+        case 2 :
+          return '已发表'
+        case 3 :
+          return '审核失败'
+        case 4 :
+          return '已删除'
+      }
+    },
+    statusType (value) {
+      switch (value) {
+        case 0 :
+          return 'info'
+        case 2 :
+          return 'success'
+        case 3 :
+          return 'warning'
+        case 4 :
+          return 'danger'
+      }
+    }
+
+  },
+  created () {
+    this.getArticles()
+    this.getChannels()
   }
 }
 </script>
