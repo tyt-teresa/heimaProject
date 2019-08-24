@@ -29,6 +29,9 @@ export default new Router({
         }, {
           path: '/home/material',
           component: () => import('./views/material')
+        }, {
+          path: '/home/articles',
+          component: () => import('./views/articles')
         }
       ]
     }
