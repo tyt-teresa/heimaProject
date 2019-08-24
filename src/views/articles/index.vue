@@ -58,6 +58,9 @@
         </div>
       </div>
     </div>
+    <el-row type="flex" justify="center" style="margin-top:20px">
+      <el-pagination background layout="prev, pager, next" :total="page.totalCount" @current-change="changePage"></el-pagination>
+    </el-row>
   </el-card>
 </template>
 
@@ -80,16 +83,29 @@ export default {
     }
   },
   methods: {
-    refreshList () {
+    // 获取from表单中的状态
+    getConditions () {
       let { channels_id: cid, status, dateRange } = this.formData
       let params = {
         status: status === 5 ? null : status,
         channels_id: cid,
         begin_pubdate: dateRange && dateRange.length ? dateRange[0] : null,
-        end_pubdate: dateRange && dateRange.length > 1 ? dateRange[1] : null
-      }
-      this.getArticles(params)
+        end_pubdate: dateRange && dateRange.length > 1 ? dateRange[1] : null }
+      params.page = this.page.currentPage
+      params.per_page = this.page.pageSize
+      return params
     },
+    // 切换页码
+    changePage (newPage) {
+      this.page.currentPage = newPage
+      this.getArticles(this.getConditions())
+    },
+    // 当from表单中的状态发生改变时重新刷新表单
+    refreshList () {
+      this.page.currentPage = 1
+      this.getArticles(this.getConditions())
+    },
+    // 获取文章列表
     getArticles (params) {
       this.$axios({
         url: '/articles',
@@ -100,6 +116,7 @@ export default {
         this.page.totalCount = result.data.total_count
       })
     },
+    // 获取频道列表
     getChannels () {
       this.$axios({
         url: '/channels'
@@ -112,29 +129,28 @@ export default {
   filters: {
     statusText (value) {
       switch (value) {
-        case 0 :
+        case 0:
           return '草稿'
-        case 2 :
+        case 2:
           return '已发表'
-        case 3 :
+        case 3:
           return '审核失败'
-        case 4 :
+        case 4:
           return '已删除'
       }
     },
     statusType (value) {
       switch (value) {
-        case 0 :
+        case 0:
           return 'info'
-        case 2 :
+        case 2:
           return 'success'
-        case 3 :
+        case 3:
           return 'warning'
-        case 4 :
+        case 4:
           return 'danger'
       }
     }
-
   },
   created () {
     this.getArticles()
