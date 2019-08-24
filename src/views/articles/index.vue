@@ -5,7 +5,7 @@
     </bread-crumb>
     <el-form class="total-title">
       <el-form-item label="文章状态:">
-        <el-radio-group v-model="radio">
+        <el-radio-group v-model="formData.status" @change="refreshList">
           <el-radio :label="5">全部</el-radio>
           <el-radio :label="0">草稿</el-radio>
           <el-radio :label="1">待审核</el-radio>
@@ -14,20 +14,22 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="频道列表:">
-        <el-select v-model="channels_id" placeholder="请选择">
-          <el-option v-for="item in channel" :key="item.id" :label="item.name" :value="item.id"></el-option>
+        <el-select v-model="formData.channels_id" placeholder="请选择" @change="refreshList">
+          <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="时间选择:">
         <el-date-picker
-          v-model="value1"
+          @change="refreshList"
+          v-model="formData.dateRange"
+          value-format="yyyy-MM-dd"
           type="daterange"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
         ></el-date-picker>
       </el-form-item>
     </el-form>
-    <div class="total_title">共找到条符合条件的内容</div>
+    <div class="total_title">共找到{{page.totalCount}}条符合条件的内容</div>
     <!-- 内容列表 -->
     <div class="content-list">
       <!-- 循环项 -->
@@ -63,36 +65,47 @@
 export default {
   data () {
     return {
-    //   formDate: {
-    //     radio: 5,
-    //     channels_id: '',
-    //     status: null,
-    //     page: {
-    //       currentPage: 1,
-    //       totalCount: 0,
-    //       pageSize: 10
-    //     }
-    //  },
+      formData: {
+        channels_id: '',
+        status: 5,
+        dateRange: null
+      },
+      page: {
+        currentPage: 1,
+        totalCount: 0,
+        pageSize: 10
+      },
       channels: [],
       list: []
     }
   },
   methods: {
+    refreshList () {
+      let { channels_id: cid, status, dateRange } = this.formData
+      let params = {
+        status: status === 5 ? null : status,
+        channels_id: cid,
+        begin_pubdate: dateRange && dateRange.length ? dateRange[0] : null,
+        end_pubdate: dateRange && dateRange.length > 1 ? dateRange[1] : null
+      }
+      this.getArticles(params)
+    },
+    getArticles (params) {
+      this.$axios({
+        url: '/articles',
+        params: { ...params }
+      }).then(result => {
+        // console.log(result)/
+        this.list = result.data.results
+        this.page.totalCount = result.data.total_count
+      })
+    },
     getChannels () {
       this.$axios({
         url: '/channels'
       }).then(result => {
         // console.log(result.data)
-        this.channel = result.data.results
-      })
-    },
-    getArticles () {
-      this.$axios({
-        url: '/articles'
-      }).then(result => {
-        // console.log(result)/
-        this.list = result.data.results
-        this.totalCount = result.data.total_count
+        this.channels = result.data.channels
       })
     }
   },
