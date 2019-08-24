@@ -83,6 +83,16 @@ export default {
     }
   },
   methods: {
+    delItem (item) {
+      this.$confirm('您确定要删除此篇文章吗', '提示').then(() => {
+        this.$axios({
+          method: 'delete',
+          url: `/articles/${item.id.toString()}`
+        }).then(result => {
+          this.getArticles(this.getConditions())
+        })
+      })
+    },
     // 获取from表单中的状态
     getConditions () {
       let { channels_id: cid, status, dateRange } = this.formData
@@ -153,7 +163,7 @@ export default {
     }
   },
   created () {
-    this.getArticles()
+    this.getArticles({ page: 1, per_page: 10 })
     this.getChannels()
   }
 }
