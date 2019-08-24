@@ -33,6 +33,9 @@
         @current-change="changePage"
       ></el-pagination>
     </el-row>
+    <el-upload class="upload-material" action="" multiple :http-request="uploadImg" :show-file-list="false">
+        <el-button type="primary">上传图片</el-button>
+    </el-upload>
   </el-card>
 </template>
 
@@ -50,25 +53,40 @@ export default {
     }
   },
   methods: {
-    // 收藏或取消收藏
-    collectOrCanel (item) {
-      let msg = item.is_collected ? '取消收藏' : '收藏'
-      this.$confirm(`您是否要${msg}此图片?`, '提示')
+    // 自定义上传方法0
+    uploadImg (params) {
+      console.log(params)
+      let formData = new FormData()
+      formData.append('image', params.file)
       this.$axios({
-        methods: 'put',
-        url: `/user/images/${item.id}`,
-        data: {
-          collect: !item.is_collected
-        }
+        method: 'post',
+        url: '/user/images',
+        data: formData
       }).then(result => {
         this.getMaterials()
+      })
+    },
+    // 收藏或取消收藏
+    collectOrCanel (item) {
+      console.log(item)
+      let msg = item.is_collected ? '取消收藏' : '收藏'
+      this.$confirm(`您是否要${msg}此图片?`, '提示').then(() => {
+        this.$axios({
+          method: 'put',
+          url: `/user/images/${item.id}`,
+          data: {
+            collect: !item.is_collected
+          }
+        }).then(result => {
+          this.getMaterials()
+        })
       })
     },
     // 删除素材
     delMaterial (item) {
       this.$confirm('您确定要删除此图片吗?', '提示').then(() => {
         this.$axios({
-          methods: 'delete',
+          method: 'delete',
           url: `/user/images/${item.id}`
         }).then(result => {
           this.getMaterials()
@@ -95,7 +113,7 @@ export default {
         url: '/user/images',
         params: { collect: this.activeName === 'collect', ...pageParams }
       }).then(result => {
-        console.log(result.data.results)
+        // console.log(result.data.results)
         this.list = result.data.results
         this.page.total = result.data.total_count
       })
@@ -135,5 +153,10 @@ export default {
       }
     }
   }
+}
+.upload-material{
+    position:absolute;
+    top:122px;
+    right:40px;
 }
 </style>
