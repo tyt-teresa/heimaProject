@@ -9,8 +9,8 @@
           <el-card v-for="item in list" :key="item.id" class="img-card">
             <img :src="item.url" alt />
             <el-row type="flex" justify="space-around" class="operate">
-              <i class="el-icon-star-on"></i>
-              <i class="el-icon-delete-solid"></i>
+              <i class="el-icon-star-on" @click="collectOrCanel(item)" :style="{color:item.is_collected?'red':''}"></i>
+              <i class="el-icon-delete-solid" @click="delMaterial(item)"></i>
             </el-row>
           </el-card>
         </div>
@@ -50,14 +50,42 @@ export default {
     }
   },
   methods: {
+    // 收藏或取消收藏
+    collectOrCanel (item) {
+      let msg = item.is_collected ? '取消收藏' : '收藏'
+      this.$confirm(`您是否要${msg}此图片?`, '提示')
+      this.$axios({
+        methods: 'put',
+        url: `/user/images/${item.id}`,
+        data: {
+          collect: !item.is_collected
+        }
+      }).then(result => {
+        this.getMaterials()
+      })
+    },
+    // 删除素材
+    delMaterial (item) {
+      this.$confirm('您确定要删除此图片吗?', '提示').then(() => {
+        this.$axios({
+          methods: 'delete',
+          url: `/user/images/${item.id}`
+        }).then(result => {
+          this.getMaterials()
+        })
+      })
+    },
+    // 实现分页
     changePage (newPage) {
       this.page.currentPage = newPage
       this.getMaterials()
     },
+    // 切换标签页
     changeTab () {
       this.page.currentPage = 1
       this.getMaterials()
     },
+    // 获取后台素材
     getMaterials () {
       let pageParams = {
         page: this.page.currentPage,
@@ -82,7 +110,7 @@ export default {
 <style lang="less" scoped>
 .img-list {
   display: flex;
-  justify-content: space-around;
+  justify-content: start;
   flex-wrap: wrap;
   .img-card {
     width: 180px;
