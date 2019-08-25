@@ -8,15 +8,23 @@
         <el-input style="width:400px" v-model="formData.title"></el-input>
       </el-form-item>
       <el-form-item label="内容" prop="content">
-        <quill-editor type="textarea" placeholder="请输入内容" style="width:800px;height:400px;margin-bottom:100px" v-model="formData.content"></quill-editor>
+        <quill-editor
+          type="textarea"
+          placeholder="请输入内容"
+          style="width:800px;height:400px;margin-bottom:100px"
+          v-model="formData.content"
+        ></quill-editor>
       </el-form-item>
       <el-form-item label="封面" prop="cover">
-        <el-radio-group v-model="formData.cover.type">
+        <el-radio-group v-model="formData.cover.type" @change="changeType()">
           <el-radio :label="1">单图</el-radio>
           <el-radio :label="3">三图</el-radio>
           <el-radio :label="0">无图</el-radio>
           <el-radio :label="-1">自动</el-radio>
         </el-radio-group>
+      </el-form-item>
+      <el-form-item>
+        <cover-img :images="formData.cover.images"></cover-img>
       </el-form-item>
       <el-form-item label="频道" prop="channel_id">
         <el-select placeholder="请选择" v-model="formData.channel_id">
@@ -47,18 +55,29 @@ export default {
         channel_id: null
       },
       rules: {
-        title: [{ required: true, message: '标题不能为空' },
+        title: [
+          { required: true, message: '标题不能为空' },
           {
             min: 5,
             max: 30,
             message: '标题内容需要在5~30字符之间'
-          }],
+          }
+        ],
         content: [{ required: true, message: '内容不能为空' }],
         channel_id: [{ required: true, message: '频道不能为空' }]
       }
     }
   },
   methods: {
+    changeType () {
+      if (this.formData.cover.type === 1) {
+        this.formData.cover.images = ['']
+      } else if (this.formData.cover.type === 3) {
+        this.formData.cover.images = ['', '', '']
+      } else {
+        this.formData.cover.images = []
+      }
+    },
     getArticlesID () {
       let { articleId } = this.$route.params
       this.$axios({
@@ -68,7 +87,7 @@ export default {
       })
     },
     publish (draft) {
-      this.$refs.myFrom.validate((isOK) => {
+      this.$refs.myFrom.validate(isOK => {
         if (isOK) {
           let { articleId } = this.$route.params
           let method = articleId ? 'put' : 'post'
