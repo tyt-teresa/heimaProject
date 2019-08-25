@@ -144,6 +144,8 @@ export default {
       switch (value) {
         case 0:
           return '草稿'
+        case 1:
+          return '待审核'
         case 2:
           return '已发表'
         case 3:
@@ -156,6 +158,8 @@ export default {
       switch (value) {
         case 0:
           return 'info'
+        case 1:
+          return 'warning'
         case 2:
           return 'success'
         case 3:

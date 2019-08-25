@@ -64,6 +64,14 @@ export default {
     }
   },
   methods: {
+    getArticlesID () {
+      let { articleId } = this.$route.params
+      this.$axios({
+        url: `/articles/${articleId}`
+      }).then(result => {
+        this.formData = result.data
+      })
+    },
     publish (draft) {
       this.$refs.myFrom.validate((isOK) => {
         if (isOK) {
@@ -89,6 +97,7 @@ export default {
   },
   created () {
     this.getChannels()
+    this.getArticlesID()
   }
 }
 </script>
