@@ -6,7 +6,7 @@
     <el-form label-width="80px" :model="formData" :rules="rules" ref="myFrom">
       <el-form-item label="标题" prop="title">
         <el-input style="width:400px" v-model="formData.title"></el-input>
-      </el-form-item >
+      </el-form-item>
       <el-form-item label="内容" prop="content">
         <el-input type="textarea" placeholder="请输入内容" :rows="20" v-model="formData.content"></el-input>
       </el-form-item>
@@ -20,17 +20,12 @@
       </el-form-item>
       <el-form-item label="频道" prop="channel_id">
         <el-select placeholder="请选择" v-model="formData.channel_id">
-          <el-option
-            v-for="item in channels"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          ></el-option>
+          <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label>
-          <el-button type="primary" @click="publish(false)">发表</el-button>
-           <el-button @click="publish(true)">存为草稿</el-button>
+        <el-button type="primary" @click="publish(false)">发表</el-button>
+        <el-button @click="publish(true)">存为草稿</el-button>
       </el-form-item>
     </el-form>
   </el-card>
@@ -75,9 +70,12 @@ export default {
     publish (draft) {
       this.$refs.myFrom.validate((isOK) => {
         if (isOK) {
+          let { articleId } = this.$route.params
+          let method = articleId ? 'put' : 'post'
+          let url = articleId ? `/articles/${articleId}` : '/articles'
           this.$axios({
-            method: 'post',
-            url: '/articles',
+            method,
+            url,
             params: { draft },
             data: this.formData
           }).then(result => {
@@ -96,8 +94,9 @@ export default {
     }
   },
   created () {
+    let { articleId } = this.$route.params
+    articleId && this.getArticlesID()
     this.getChannels()
-    this.getArticlesID()
   }
 }
 </script>
