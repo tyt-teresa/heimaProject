@@ -2,6 +2,7 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 import JSONBig from 'json-bigint'
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
+// 通过JSONBig将超出计算机处理的大数字转换
 axios.defaults.transformResponse = [function (data) {
   return data ? JSONBig.parse(data) : {}
 }]
