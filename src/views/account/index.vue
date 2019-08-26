@@ -3,24 +3,24 @@
     <bread-crumb slot="header">
       <template slot="title">账户信息</template>
     </bread-crumb>
-    <el-form label-width="300px" :model="fromData" :rules="rules">
-      <el-upload class="portraits" action>
-        <img :src="fromData.photo?fromData.photo:defaulltImg" alt />
+    <el-form label-width="300px" :model="formData" :rules="rules" ref="userForm">
+      <el-upload class="portraits" action :http-request="updateImg">
+        <img :src="formData.photo?formData.photo:defaulltImg" alt />
       </el-upload>
       <el-form-item label="名称" prop="name">
-        <el-input placeholder="请输入头条号名称" v-model="fromData.name" style="width:300px"></el-input>
+        <el-input placeholder="请输入头条号名称" v-model="formData.name" style="width:350px"></el-input>
       </el-form-item>
       <el-form-item label="简介" prop="intro">
-        <el-input placeholder="请输入头条号简介" v-model="fromData.intro" style="width:300px"></el-input>
+        <el-input placeholder="请输入头条号简介" v-model="formData.intro" style="width:350px"></el-input>
       </el-form-item>
       <el-form-item label="邮箱" prop="email">
-        <el-input placeholder="请输入邮箱地址" v-model="fromData.email" style="width:300px"></el-input>
+        <el-input placeholder="请输入邮箱地址" v-model="formData.email" style="width:350px"></el-input>
       </el-form-item>
       <el-form-item label="手机号" prop="mobile">
-        <el-input disabled v-model="fromData.mobile" style="width:300px"></el-input>
+        <el-input disabled v-model="formData.mobile" style="width:350px"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">保存信息</el-button>
+        <el-button type="primary" @click="saveUserForm">保存修改</el-button>
       </el-form-item>
     </el-form>
   </el-card>
@@ -31,7 +31,7 @@ export default {
   data () {
     return {
       defaulltImg: require('../../assets/image/avatar.jpg'),
-      fromData: {
+      formData: {
         name: '',
         intro: '',
         email: '',
@@ -45,12 +45,38 @@ export default {
     }
   },
   methods: {
+    updateImg (params) {
+      // params=>content为http-request默认参数对象
+    //   console.log(params)
+      let data = new FormData()
+      data.append('photo', params.file)
+      this.$axios({
+        url: '/user/photo',
+        method: 'patch',
+        data
+      }).then(result => {
+        this.formData.photo = result.data.photo
+      })
+    },
+    saveUserForm () {
+      this.$refs.userForm.validate((isOK) => {
+        if (isOK) {
+          this.$axios({
+            url: '/user/profile',
+            method: 'patch',
+            data: this.formData
+          }).then(() => {
+            this.$message({ message: '保存成功', type: 'success' })
+          })
+        }
+      })
+    },
     getUserInfo () {
       this.$axios({
         url: '/user/profile'
       }).then(result => {
         // console.log(result)
-        this.fromData = result.data
+        this.formData = result.data
       })
     }
   },
