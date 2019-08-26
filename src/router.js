@@ -43,6 +43,10 @@ export default new Router({
           component: () => import('./views/account')
         }
       ]
+    },
+    {
+      path: '*',
+      component: () => import('./views/404')
     }
 
     // {
