@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import eventBus from '../../tools/eventBus'
 export default {
   data () {
     return {
@@ -39,8 +40,10 @@ export default {
         photo: ''
       },
       rules: {
-        name: [{ required: true, message: '用户名称不能为空' }],
-        email: [{ required: true, message: '邮箱不能为空' }]
+        name: [
+          { required: true, message: '用户名称不能为空' }, { min: 1, max: 7, message: '用户名需在1~7字符之间' }
+        ],
+        email: [{ required: true, message: '邮箱不能为空' }, { pattern: /\w+@[a-z0-9]+\.[a-z]{2,4}/, message: '邮箱格式不正确' }]
       }
     }
   },
@@ -56,6 +59,7 @@ export default {
         data
       }).then(result => {
         this.formData.photo = result.data.photo
+        eventBus.$emit('updateUserInfoSuccess')
       })
     },
     saveUserForm () {
@@ -67,6 +71,7 @@ export default {
             data: this.formData
           }).then(() => {
             this.$message({ message: '保存成功', type: 'success' })
+            eventBus.$emit('updateUserInfoSuccess')
           })
         }
       })

@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import eventBus from '../../tools/eventBus'
 export default {
   data () {
     return {
@@ -58,6 +59,9 @@ export default {
   },
   created () {
     this.getInfo()
+    eventBus.$on('updateUserInfoSuccess', () => {
+      this.getInfo()
+    })
   }
 }
 </script>
