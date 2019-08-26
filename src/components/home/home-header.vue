@@ -1,7 +1,7 @@
 <template>
   <el-row class="home-header" type="flex" justify="space-between" align="middle">
     <el-col :span="9" class="left-header">
-      <i class="el-icon-s-unfold"></i>
+      <i :class="currentClass" @click="openOrClose"></i>
       <span>江苏传智播客教育科技股份有限公司</span>
     </el-col>
     <el-col :span="4" class="right-header">
@@ -29,16 +29,21 @@ export default {
       user: {
 
       },
+      currentClass: 'el-icon-s-fold',
       defaultImg: require('../../assets/image/avatar.jpg')
     }
   },
   methods: {
+    openOrClose () {
+      eventBus.$emit('collapseOrClose')
+      this.currentClass = this.currentClass === 'el-icon-s-fold' ? 'el-icon-s-unfold' : 'el-icon-s-fold'
+    },
     getInfo () {
       // let userinfo = window.localStorage.getItem('user-info')
       // let token = userinfo ? JSON.parse(userinfo).token : null
       // console.log(token)
       this.$axios({
-        methods: 'get',
+        // methods: 'get',
         url: '/user/profile'
         // headers: { 'Authorization': `Bearer ${token}` }
       }).then(result => {
